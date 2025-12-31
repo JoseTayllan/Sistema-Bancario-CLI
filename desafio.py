@@ -64,7 +64,13 @@ def criar_conta_corrente(usuarios, agencia,contas):
       cpf = input("Informe o CPF do usuário: ")
       usuario = filtrar_usuario(cpf, usuarios)
       if usuario:
-           contas.append({"agencia": agencia, "numero_conta": numero_conta, "usuario": usuario})
+           contas.append({
+                "agencia": agencia, 
+                "numero_conta": numero_conta,
+                "usuario": usuario,
+                "saldo": 0.0,
+                "transacoes": []
+                })
            print("Conta criada com sucesso!")
       else:
            print("Usuário não encontrado, fluxo de criação de conta encerrado!")
@@ -132,7 +138,27 @@ def gerar_relatorio(transacoes, tipo=None):
         if tipo is None or transacao["tipo"] == tipo:
             yield transacao
 
+class ContaIterador:
+     def __init__(self, contas):
+          self.contas = contas
+          self.indice = 0
 
+     def __iter__(self):
+          return self
+
+     def __next__(self): 
+          if self.indice >= len(self.contas):
+               raise StopIteration
+          conta = self.contas[self.indice]
+          self.indice += 1
+
+          return{
+            "agencia": conta.get("agencia"),
+            "numero_conta": conta.get("numero_conta"),
+            "usuario": conta.get("usuario", {}).get("nome"),
+            "saldo": conta.get("saldo",0.0)
+        }
+          
 def main():
     
     LIMITE_SAQUES = 3
@@ -185,6 +211,17 @@ def main():
 
             for t in gerar_relatorio(transacoes, tipo):
                 print(f"{t['tipo'].title()} - R$ {t['valor']:.2f}")
+                
+        elif opcao =="1":
+             print("\n=== Contas do banco ===")
+             for conta in ContaIterador(contas):
+                 print(
+                     f"Agência: {conta['agencia']} | "
+                     f"Conta: {conta['numero_conta']} | "
+                     f"Titular: {conta['usuario']} | "
+                     f"Saldo: R$ {conta['saldo']:.2f}"
+                 )
+             print("=======================\n")
 
         elif opcao == "q":
             break
