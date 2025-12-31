@@ -21,6 +21,7 @@ Lista de opções! \n
 [d] Depositar
 [s] Sacar
 [e] Extrato
+[r] Relatório de Transações
 [q] Sair
 
 => """
@@ -69,16 +70,20 @@ def criar_conta_corrente(usuarios, agencia,contas):
            print("Usuário não encontrado, fluxo de criação de conta encerrado!")
 
 @log_transacao
-def deposito(valor, saldo, extrato):
+def deposito(valor, saldo, extrato, transacoes):
     if valor > 0:
         saldo += valor
         extrato += f"Depósito: R$ {valor:.2f}\n"
+        transacoes.append({
+             "tipo": "deposito", 
+             "valor": valor
+             })
     else:
         print("Operação falhou! O valor informado é inválido.")
     return saldo, extrato
 
 @log_transacao
-def sacar(*, saldo, valor, extrato, numero_saques, limite, limite_saques):
+def sacar(*, saldo, valor, extrato, numero_saques, limite, limite_saques, transacoes):
     limite = saldo
 
     excedeu_saldo = valor > saldo
@@ -100,6 +105,10 @@ def sacar(*, saldo, valor, extrato, numero_saques, limite, limite_saques):
             saldo -= valor
             extrato += f"Saque: R$ {valor:.2f}\n"
             numero_saques += 1
+            transacoes.append({
+                    "tipo": "saque",
+                    "valor": valor
+            })
 
     else:
             print("Operação falhou! O valor informado é inválido.")
@@ -113,7 +122,19 @@ def exibir_extrato(saldo,*,extrato):
       print("==========================================")
       return saldo, extrato
 
+def gerar_relatorio(transacoes, tipo=None):
+    """
+    Gerador de relatório de transações.
+    :param transacoes: lista de transações
+    :param tipo: 'deposito', 'saque' ou None
+    """
+    for transacao in transacoes:
+        if tipo is None or transacao["tipo"] == tipo:
+            yield transacao
+
+
 def main():
+    
     LIMITE_SAQUES = 3
     AGENCIA = "0001"
 
@@ -124,6 +145,7 @@ def main():
     usuarios = []
     global contas
     contas = []
+    transacoes = []
     
 
     while True:
@@ -140,7 +162,7 @@ def main():
 
         elif opcao == "d":
             valor = float(input("Informe o valor do depósito: "))
-            saldo, extrato = deposito(valor, saldo, extrato)
+            saldo, extrato = deposito(valor, saldo, extrato, transacoes)
 
         elif opcao == "s":
             valor = float(input("Informe o valor do saque: "))
@@ -151,10 +173,18 @@ def main():
                 numero_saques=numero_saques,
                 limite=limite,
                 limite_saques=LIMITE_SAQUES,
+                transacoes=transacoes
             )
 
         elif opcao == "e":
             exibir_extrato(saldo, extrato=extrato)
+
+        elif opcao == "r":
+            tipo = input("Filtrar por (deposito/saque ou enter para todos): ").lower()
+            tipo = tipo if tipo else None
+
+            for t in gerar_relatorio(transacoes, tipo):
+                print(f"{t['tipo'].title()} - R$ {t['valor']:.2f}")
 
         elif opcao == "q":
             break
