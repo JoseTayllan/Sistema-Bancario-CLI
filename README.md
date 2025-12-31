@@ -101,4 +101,65 @@ Este projeto tem como foco:
 
 ---
 
-📌 *Projeto desenvolvido para fins educacionais no Bootcamp Luizalabs – Back-end com Python.*
+📌 *Projeto desenvolvido para fins educacionais no Bootcamp Luizalabs – Back-end com Python (DIO).*
+
+---
+
+## 🧪 Avaliação Técnica (Nível Pleno)
+
+Este projeto demonstra:
+
+* Domínio de **fluxo de controle**, **estruturas de dados** e **funções** em Python
+* Implementação correta de **regras de negócio** e validações
+* Uso consciente de **imutabilidade e estado** (controle de saldo e extrato)
+* Organização de código visando **legibilidade e manutenção**
+
+Pontos avaliados tecnicamente:
+
+* Clareza das funções
+* Tratamento de erros e validações
+* Separação lógica de responsabilidades
+* Aderência às regras propostas no desafio
+
+---
+
+## 🌍 English Version
+
+# 🏦 Banking System in Python (CLI)
+
+This project was developed as part of the **Module 2 Challenge – Luizalabs Bootcamp | Python Back-end (DIO)**.
+It simulates a simple banking system using **pure Python**, executed via **command-line interface (CLI)**.
+
+## Features
+
+* User creation (unique CPF)
+* Bank account creation linked to users
+* Account listing
+* Deposits and withdrawals
+* Business rule validation
+* Detailed bank statement
+
+## Business Rules
+
+* Each user is uniquely identified by CPF
+* Duplicate CPF registration is not allowed
+* Each account:
+
+  * Belongs to one user
+  * Uses fixed branch code `0001`
+  * Has an automatic sequential number
+* Withdrawals:
+
+  * Limited amount per operation
+  * Maximum of 3 withdrawals per day
+  * Cannot exceed available balance
+* All transactions are recorded in the statement
+
+## Technologies
+
+* Python 3
+* Standard Library (`textwrap`)
+
+---
+
+📌 *Educational project developed during the Luizalabs Python Back-end Bootcamp.*
