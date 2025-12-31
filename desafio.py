@@ -1,4 +1,17 @@
 import textwrap
+
+from datetime import datetime
+from functools import wraps
+
+def log_transacao(func):
+     @wraps(func)
+     def wrapper(*args, **kwargs):
+          data_hora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+          print(f'[LOG] {data_hora} | Transação: {func.__name__}')
+          #print(f"[LOG] {data_hora} | Transação: {func.__name__.replace('_', ' ').title()}")
+          return func(*args, **kwargs)
+     return wrapper
+
 def menu():
     menu = """
 Lista de opções! \n
@@ -13,6 +26,7 @@ Lista de opções! \n
 => """
     return input(textwrap.dedent(menu))
 
+@log_transacao
 def criar_usuario(usuarios):
      
      nome= input("Informe o nome completo: ")
@@ -43,6 +57,7 @@ def listar_contas(usuarios):
           print(f"Titular: {usuario['nome']}")
           print("")
 
+@log_transacao
 def criar_conta_corrente(usuarios, agencia,contas):
       numero_conta = len(contas) + 1
       cpf = input("Informe o CPF do usuário: ")
@@ -53,6 +68,7 @@ def criar_conta_corrente(usuarios, agencia,contas):
       else:
            print("Usuário não encontrado, fluxo de criação de conta encerrado!")
 
+@log_transacao
 def deposito(valor, saldo, extrato):
     if valor > 0:
         saldo += valor
@@ -61,6 +77,7 @@ def deposito(valor, saldo, extrato):
         print("Operação falhou! O valor informado é inválido.")
     return saldo, extrato
 
+@log_transacao
 def sacar(*, saldo, valor, extrato, numero_saques, limite, limite_saques):
     limite = saldo
 
